@@ -1,0 +1,19 @@
+{
+	"name": "SFLead",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Salesforce_SZ",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "Lead"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

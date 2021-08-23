@@ -1,0 +1,121 @@
+{
+	"name": "SalesforceUpdateOpportunityTable",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyToAzure",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "MaxLastModifiedDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "SELECT Id\n,IsDeleted\n,AccountId\n,IsPrivate\n,Name\n,Description\n,StageName\n,Amount\n,Probability\n,ExpectedRevenue\n,TotalOpportunityQuantity\n,CloseDate\n,Type\n,NextStep\n,LeadSource\n,IsClosed\n,IsWon\n,ForecastCategory\n,ForecastCategoryName\n,CampaignId\n,HasOpportunityLineItem\n,Pricebook2Id\n,OwnerId\n,CreatedDate\n,CreatedById\n,LastModifiedDate\n,LastModifiedById\n,SystemModstamp\n,LastActivityDate\n,FiscalQuarter\n,FiscalYear\n,Fiscal\n,LastViewedDate\n,LastReferencedDate\n,HasOpenActivity\n,HasOverdueTask\n,DeliveryInstallationStatus__c\n,TrackingNumber__c\n,OrderNumber__c\n,CurrentGenerators__c\n,MainCompetitors__c\nFROM opportunity\nWHERE LastModifiedDate >=  @{formatDateTime(activity('MaxLastModifiedDate').output.firstRow.lastmodifieddate,'yyyy-MM-ddTHH:mm:ssZ')}",
+							"type": "Expression"
+						},
+						"readBehavior": "queryAll"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SFOpportunity",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSQLStageOpportunity",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "MaxLastModifiedDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifiedDate),'01/01/1901') AS lastmodifieddate\nFROM [salesforce].opportunity",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlSFOpportunity",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SpIncrementalLoad",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyToAzure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[salesforce].[opportunity_incrementalload]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Salesforce/Update Tables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-17T17:57:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

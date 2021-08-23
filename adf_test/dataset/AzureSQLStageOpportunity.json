@@ -1,0 +1,202 @@
+{
+	"name": "AzureSQLStageOpportunity",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsDeleted",
+				"type": "bit"
+			},
+			{
+				"name": "AccountId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsPrivate",
+				"type": "bit"
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StageName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "Probability",
+				"type": "decimal",
+				"precision": 3,
+				"scale": 0
+			},
+			{
+				"name": "ExpectedRevenue",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "TotalOpportunityQuantity",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "CloseDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "Type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NextStep",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LeadSource",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsClosed",
+				"type": "bit"
+			},
+			{
+				"name": "IsWon",
+				"type": "bit"
+			},
+			{
+				"name": "ForecastCategory",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ForecastCategoryName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HasOpportunityLineItem",
+				"type": "bit"
+			},
+			{
+				"name": "Pricebook2Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OwnerId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "CreatedById",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModifiedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastModifiedById",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SystemModstamp",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastActivityDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "FiscalQuarter",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FiscalYear",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Fiscal",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastViewedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastReferencedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "HasOpenActivity",
+				"type": "bit"
+			},
+			{
+				"name": "HasOverdueTask",
+				"type": "bit"
+			},
+			{
+				"name": "DeliveryInstallationStatus__c",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TrackingNumber__c",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrderNumber__c",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CurrentGenerators__c",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MainCompetitors__c",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "salesforce",
+			"table": "stage_opportunity"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

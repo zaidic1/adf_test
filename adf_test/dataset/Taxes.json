@@ -1,0 +1,37 @@
+{
+	"name": "Taxes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "stapi01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Dump"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "TAX_RATES.CSV",
+				"folderPath": "Raw Data",
+				"container": "tax-rate-etl"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "STATE",
+				"type": "String"
+			},
+			{
+				"name": "TAX_RATE",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

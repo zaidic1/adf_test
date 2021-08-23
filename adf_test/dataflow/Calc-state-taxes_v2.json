@@ -1,0 +1,48 @@
+{
+	"name": "Calc-state-taxes_v2",
+	"properties": {
+		"folder": {
+			"name": "Dump"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Invoices",
+						"type": "DatasetReference"
+					},
+					"name": "invoices"
+				},
+				{
+					"dataset": {
+						"referenceName": "Taxes",
+						"type": "DatasetReference"
+					},
+					"name": "taxes"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "StateTaxOutput",
+						"type": "DatasetReference"
+					},
+					"name": "StateTaxOutput"
+				}
+			],
+			"transformations": [
+				{
+					"name": "invoicetaxjoin"
+				},
+				{
+					"name": "calculatedtaxescolumn"
+				},
+				{
+					"name": "columnselect"
+				}
+			],
+			"script": "source(output(\n\t\tINVOICE_ID as string,\n\t\tINV_DUEDATE as date 'MM/dd/yyyy',\n\t\tINV_STATE as string,\n\t\tINV_AMOUNT as double '000,000,000.0'\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> invoices\nsource(output(\n\t\tSTATE as string,\n\t\tTAX_RATE as double '000,000,000.0'\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> taxes\ninvoices, taxes join(INV_STATE == STATE,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> invoicetaxjoin\ninvoicetaxjoin derive(state_tax = toDecimal(TAX_RATE*INV_AMOUNT,10,1),\n\t\tpast_due = iif(currentDate()-INV_DUEDATE > 30, \"Yes\", \"No\")) ~> calculatedtaxescolumn\ncalculatedtaxescolumn select(mapColumn(\n\t\tINVOICE_ID,\n\t\tINV_DUEDATE,\n\t\tINV_STATE,\n\t\tINV_AMOUNT,\n\t\tSTATE_TAX = state_tax,\n\t\tPAST_DUE = past_due\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> columnselect\ncolumnselect sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tpartitionFileNames:['finaloutput.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tINVOICE_ID,\n\t\tINV_DUEDATE,\n\t\tINV_STATE,\n\t\tINV_AMOUNT,\n\t\tSTATE_TAX,\n\t\tPAST_DUE\n\t),\n\tpartitionBy('hash', 1)) ~> StateTaxOutput"
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "SFOpportunity",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Salesforce_SZ",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "Opportunity"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

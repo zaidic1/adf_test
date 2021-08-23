@@ -1,0 +1,86 @@
+{
+	"name": "MainSalesforceToAzure",
+	"properties": {
+		"activities": [
+			{
+				"name": "SalesforceUpdateAccountTable",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SalesforceUpdateAccountTable",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SalesforceUpdateContractTable",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SalesforceUpdateAccountTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SalesforceUpdateContractTable",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SalesforceUpdateOpportunityTable",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SalesforceUpdateContractTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SalesforceUpdateOpportunityTable",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SalesforceUpdateLeadTable",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SalesforceUpdateOpportunityTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SalesforceUpdateLeadTable",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-17T19:00:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

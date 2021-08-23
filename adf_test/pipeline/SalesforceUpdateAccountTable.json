@@ -1,0 +1,128 @@
+{
+	"name": "SalesforceUpdateAccountTable",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyToAzure",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "MaxLastModifiedDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "maxdate",
+						"value": "activity('Lookup Max Date').output.firstRow.MaxDate"
+					},
+					{
+						"name": "id",
+						"value": "0014x000009eb1GAAQ"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "select Id\n,IsDeleted\n,MasterRecordId\n,Name\n,Type\n,ParentId\n,BillingStreet\n,BillingCity\n,BillingState\n,BillingPostalCode\n,BillingCountry\n,BillingLatitude\n,BillingLongitude\n,BillingGeocodeAccuracy\n,ShippingStreet\n,ShippingCity\n,ShippingState\n,ShippingPostalCode\n,ShippingCountry\n,ShippingLatitude\n,ShippingLongitude\n,ShippingGeocodeAccuracy\n,Phone\n,Fax\n,AccountNumber\n,Website\n,PhotoUrl\n,Sic\n,Industry\n,AnnualRevenue\n,NumberOfEmployees\n,Ownership\n,TickerSymbol\n,Description\n,Rating\n,Site\n,OwnerId\n,CreatedDate\n,CreatedById\n,LastModifiedDate\n,LastModifiedById\n,SystemModstamp\n,LastActivityDate\n,LastViewedDate\n,LastReferencedDate\n,Jigsaw\n,JigsawCompanyId\n,CleanStatus\n,AccountSource\n,DunsNumber\n,Tradestyle\n,NaicsCode\n,NaicsDesc\n,YearStarted\n,SicDesc\n,DandbCompanyId\n,OperatingHoursId\n,CustomerPriority__c\n,SLA__c\n,Active__c\n,NumberofLocations__c\n,UpsellOpportunity__c\n,SLASerialNumber__c\n,SLAExpirationDate__c\n,Total_Invoiced__c\n,Test_1_Invoiced_Tot__c\n FROM account WHERE LastModifiedDate >=  @{formatDateTime(activity('MaxLastModifiedDate').output.firstRow.lastmodifieddate,'yyyy-MM-ddTHH:mm:ssZ')}",
+							"type": "Expression"
+						},
+						"readBehavior": "queryAll"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SFAccount",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlSFStageAccount",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "MaxLastModifiedDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifiedDate),'01/01/1901') AS lastmodifieddate\nFROM [salesforce].account",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlSFAccount",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SpIncrementalLoad",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyToAzure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[salesforce].[account_incrementalload]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Salesforce/Update Tables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-17T17:54:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,20 @@
+{
+	"name": "AzureSqlSFOpportunity",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "salesforce",
+			"table": "opportunity"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

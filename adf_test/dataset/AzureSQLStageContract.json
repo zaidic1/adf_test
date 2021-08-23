@@ -1,0 +1,190 @@
+{
+	"name": "AzureSQLStageContract",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Pricebook2Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OwnerExpirationNotice",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "EndDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "BillingStreet",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingCity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingState",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingPostalCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingCountry",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillingLatitude",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 15
+			},
+			{
+				"name": "BillingLongitude",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 15
+			},
+			{
+				"name": "BillingGeocodeAccuracy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ContractTerm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OwnerId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Status",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanySignedId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanySignedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "CustomerSignedId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomerSignedTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomerSignedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "SpecialTerms",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ActivatedById",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ActivatedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "StatusCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsDeleted",
+				"type": "bit"
+			},
+			{
+				"name": "ContractNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastApprovedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "CreatedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "CreatedById",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastModifiedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastModifiedById",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SystemModstamp",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastActivityDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastViewedDate",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LastReferencedDate",
+				"type": "datetime2",
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "salesforce",
+			"table": "stage_contract"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

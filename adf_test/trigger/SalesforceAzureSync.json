@@ -1,0 +1,24 @@
+{
+	"name": "SalesforceAzureSync",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MainSalesforceToAzure",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2021-08-16T15:00:00",
+				"timeZone": "Eastern Standard Time"
+			}
+		}
+	}
+}

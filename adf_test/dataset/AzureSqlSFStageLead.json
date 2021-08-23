@@ -1,0 +1,20 @@
+{
+	"name": "AzureSqlSFStageLead",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "salesforce",
+			"table": "stage_lead"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

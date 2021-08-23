@@ -1,0 +1,128 @@
+{
+	"name": "SalesforceUpdateLeadTable",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyToAzure",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "MaxLastModifiedDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "maxdate",
+						"value": "activity('Lookup Max Date').output.firstRow.MaxDate"
+					},
+					{
+						"name": "id",
+						"value": "0014x000009eb1GAAQ"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "SELECT Id\n,IsDeleted\n,MasterRecordId\n,LastName\n,FirstName\n,Salutation\n,Name\n,Title\n,Company\n,Street\n,City\n,State\n,PostalCode\n,Country\n,Latitude\n,Longitude\n,GeocodeAccuracy\n,Phone\n,MobilePhone\n,Fax\n,Email\n,Website\n,PhotoUrl\n,Description\n,LeadSource\n,Status\n,Industry\n,Rating\n,AnnualRevenue\n,NumberOfEmployees\n,OwnerId\n,IsConverted\n,ConvertedDate\n,ConvertedAccountId\n,ConvertedContactId\n,ConvertedOpportunityId\n,IsUnreadByOwner\n,CreatedDate\n,CreatedById\n,LastModifiedDate\n,LastModifiedById\n,SystemModstamp\n,LastActivityDate\n,LastViewedDate\n,LastReferencedDate\n,Jigsaw\n,JigsawContactId\n,CleanStatus\n,CompanyDunsNumber\n,DandbCompanyId\n,EmailBouncedReason\n,EmailBouncedDate\n,IndividualId\n,SICCode__c\n,ProductInterest__c\n,Primary__c\n,CurrentGenerators__c\n,NumberofLocations__c\nFROM lead WHERE LastModifiedDate >=  @{formatDateTime(activity('MaxLastModifiedDate').output.firstRow.lastmodifieddate,'yyyy-MM-ddTHH:mm:ssZ')}",
+							"type": "Expression"
+						},
+						"readBehavior": "queryAll"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SFLead",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlSFStageLead",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "MaxLastModifiedDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifiedDate),'01/01/1901') AS lastmodifieddate\nFROM [salesforce].lead",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSQLSFLead",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SpIncrementalLoad",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyToAzure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[salesforce].[lead_incrementalload]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Salesforce/Update Tables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-17T18:14:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

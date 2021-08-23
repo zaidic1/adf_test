@@ -1,0 +1,19 @@
+{
+	"name": "SFCase",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Salesforce_SZ",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Salesforce"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "Case"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

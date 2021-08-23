@@ -1,0 +1,37 @@
+{
+	"name": "State_Tax_Calc_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Calc-state-taxes",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Calc-state-taxes",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Dump"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-16T21:44:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

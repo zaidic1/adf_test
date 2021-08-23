@@ -1,0 +1,121 @@
+{
+	"name": "SalesforceUpdateContractTable",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyToAzure",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "MaxLastModifiedDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "SELECT Id\n,AccountId\n,Pricebook2Id\n,OwnerExpirationNotice\n,StartDate\n,EndDate\n,BillingStreet\n,BillingCity\n,BillingState\n,BillingPostalCode\n,BillingCountry\n,BillingLatitude\n,BillingLongitude\n,BillingGeocodeAccuracy\n,ContractTerm\n,OwnerId\n,Status\n,CompanySignedId\n,CompanySignedDate\n,CustomerSignedId\n,CustomerSignedTitle\n,CustomerSignedDate\n,SpecialTerms\n,ActivatedById\n,ActivatedDate\n,StatusCode\n,Description\n,IsDeleted\n,ContractNumber\n,LastApprovedDate\n,CreatedDate\n,CreatedById\n,LastModifiedDate\n,LastModifiedById\n,SystemModstamp\n,LastActivityDate\n,LastViewedDate\n,LastReferencedDate\nFROM contract\nWHERE LastModifiedDate >=  @{formatDateTime(activity('MaxLastModifiedDate').output.firstRow.lastmodifieddate,'yyyy-MM-ddTHH:mm:ssZ')}\n",
+							"type": "Expression"
+						},
+						"readBehavior": "queryAll"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SFContract",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSQLStageContract",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "MaxLastModifiedDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifiedDate),'01/01/1901') AS lastmodifieddate\nFROM [salesforce].contract",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlSFContract",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SpIncrementalLoad",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CopyToAzure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[salesforce].[contract_incrementalload]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Salesforce/Update Tables"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-08-17T17:58:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
